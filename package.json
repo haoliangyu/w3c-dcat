@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha test/**/*.test.ts --require ts-node/register",
     "build": "tslint src && tsc src/index.ts --outDir dist --declaration && cpx 'src/dcat/*' dist/dcat",
-    "prepush": "npm test",
+
     "prepublish": "npm test && npm run build"
   },
   "repository": {
