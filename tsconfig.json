@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "target": "ES2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "removeComments": true
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
