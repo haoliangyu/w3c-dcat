@@ -913,7 +913,48 @@ img { max-width: 100%; }
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
 			<h1 id="w3c-dcat">w3c-dcat</h1>
-			<p>A utility library to create and convert W3C DCAT in JSON</p>
+			<p><a href="https://travis-ci.org/haoliangyu/w3c-dcat"><img src="https://travis-ci.org/haoliangyu/w3c-dcat.svg?branch=master" alt="Build Status"></a></p>
+			<p>A utility library to create and convert <a href="https://www.w3.org/TR/vocab-dcat/">W3C DCAT</a> in JSON.</p>
+			<p>Primarily developed for <a href="https://github.com/SingularData/SingularData.net">SingularData.net</a></p>
+			<h2 id="installation">Installation</h2>
+			<pre><code class="lang-bash">npm install w3c-dcat
+</code></pre>
+			<h2 id="use">Use</h2>
+			<p>Support DCAT spec:</p>
+			<ul>
+				<li><a href="https://www.w3.org/TR/vocab-dcat/#class-dataset">Dataset</a></li>
+			</ul>
+			<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { Dataset } <span class="hljs-keyword">from</span> <span class="hljs-string">'w3c-dcat'</span>;
+
+<span class="hljs-comment">// create a new dataset class</span>
+<span class="hljs-keyword">const</span> datasetA = <span class="hljs-keyword">new</span> Dataset();
+
+<span class="hljs-comment">// create a new dataset with predefined value</span>
+<span class="hljs-keyword">const</span> datasetB = <span class="hljs-keyword">new</span> Dataset(values);
+
+<span class="hljs-comment">// extend the dataset metadata with an key-value object</span>
+datasetA.set(values);
+
+<span class="hljs-comment">// get a value-only copy of the dataset metadata</span>
+<span class="hljs-built_in">console</span>.log(datasetB.get())
+
+<span class="hljs-comment">// get a DCAT datset class from other open data vendor's dataset metadata</span>
+<span class="hljs-keyword">const</span> datasetC = Dataset.from(<span class="hljs-string">'ArcGIS'</span>, metadata)
+</code></pre>
+			<p><a href="https://www.typescriptlang.org/">TypeScript</a> is natively supported. For more examples, please see <a href="https://github.com/haoliangyu/w3c-dcat/blob/master/test/index.test.ts">tests</a> and <a href="https://haoliangyu.github.io/w3c-dcat/">documentation</a>.</p>
+			<h3 id="supported-vendor">Supported Vendor</h3>
+			<p><code>w3c-dcat</code> is able to convert dataset metadata from the following open data vendors:</p>
+			<ul>
+				<li><a href="https://hub.arcgis.com/pages/open-data">ArcGIS</a> (v2 API)</li>
+				<li><a href="https://ckan.org/">CKAN</a> (v3 API)</li>
+				<li><a href="https://getdkan.org/">DKAN</a></li>
+				<li><a href="http://geonode.org/">GeoNode</a></li>
+				<li><a href="http://www.junar.com/index9ed2.html?lang=en">Junar</a> (v2 API)</li>
+				<li><a href="https://www.opendatasoft.com/">OpenDataSoft</a> (v2 API)</li>
+				<li><a href="https://socrata.com/solutions/open-data-citizen-engagement/">Socrata</a> (v1 API)</li>
+			</ul>
+			<h2 id="license">License</h2>
+			<p>MIT</p>
 		</div>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
