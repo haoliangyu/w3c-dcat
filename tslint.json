@@ -18,7 +18,13 @@
     "object-literal-sort-keys": [
       false
     ],
-    "max-line-length" : [
+    "max-line-length": [
+      false
+    ],
+    "ordered-imports": [
+      false
+    ],
+    "no-console": [
       false
     ]
   }

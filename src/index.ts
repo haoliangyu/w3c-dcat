@@ -1,14 +1,14 @@
 import * as _ from 'lodash';
-import * as DCAT from './dcat';
+import { Dataset as DcatDataset } from './dcat/dataset';
 import { bboxToGeoJSON, ensureMultiPolygon, wktToGeoJSON } from './utils';
 
 export class Dataset {
 
   /**
    * Dataset metadata
-   * @type  {DCAT.Dataset}
+   * @type  {DcatDataset}
    */
-  private _metadata: DCAT.Dataset;
+  private _metadata: DcatDataset;
 
   /**
    * Metadata convertor
@@ -24,7 +24,7 @@ export class Dataset {
     socrata: Dataset.fromSocrata
   };
 
-  constructor(meta?: DCAT.Dataset) {
+  constructor(meta?: DcatDataset) {
     if (meta) {
       this._metadata = meta;
     }
@@ -32,9 +32,9 @@ export class Dataset {
 
   /**
    * Get a deep copy of the current dataset metadata.
-   * @return {DCAT.Dataset} dataset metadata
+   * @return {DcatDataset} dataset metadata
    */
-  public get(): DCAT.Dataset {
+  public get(): DcatDataset {
     return _.cloneDeep(this._metadata);
   }
 
@@ -53,7 +53,7 @@ export class Dataset {
    * @param  {object} meta   source metadata
    * @return {Dataset}       Dataset object
    */
-  public static from(source: string, meta: object): Dataset {
+  public static from(source: string, meta: any): Dataset {
     const type = source.toLowerCase();
 
     if (!Dataset.convertor[type]) {
@@ -64,24 +64,25 @@ export class Dataset {
   }
 
   /**
-   * Create a dataset from an ArcGIS Open Data metadata.
+   * Create a dataset from an ArcGIS Open Data metadata. Currently working with
+   * v2 API.
    * @param  {object} meta   ArcGIS Open Data metadata
    * @return {Dataset}       Dataset object
    */
   private static fromArcGIS(meta: any): Dataset {
-    // working with data.json API
+    const attrs = meta.attributes;
     const converted = {
-      title: meta.title,
-      identifier: meta.identifier,
-      issued: meta.issued ? new Date(meta.issued) : null,
-      modified: new Date(meta.modified),
-      description: meta.description,
-      landingPage: meta.landingPage,
-      license: meta.license,
-      publisher: meta.publisher.name,
-      keyword: meta.keyword,
+      title: attrs.title || attrs .name,
+      identifier: meta.id,
+      issued: new Date(attrs.createdAt),
+      modified: new Date(attrs.updatedAt),
+      description: attrs.description,
+      landingPage: attrs.landingPage,
+      license: attrs.licenseInfo,
+      publisher: attrs.source || attrs.owner,
+      keyword: attrs.tags,
       theme: [],
-      spatial: bboxToGeoJSON(meta.spatial),
+      spatial: bboxToGeoJSON(attrs.extent.coordinates),
       distribution: meta.distribution
     };
 
@@ -254,7 +255,7 @@ export class Dataset {
       publisher: meta.name,
       keyword: _.concat(_.get(meta.classification, 'tags'), _.get(meta.classification, 'domain_tags')) as string[],
       theme: _.concat(_.get(meta.classification, 'categories'), _.get(meta.classification, 'domain_category')) as string[],
-      distribution: []  as DCAT.Distribution[]
+      distribution: []
     };
 
     return new Dataset(converted);

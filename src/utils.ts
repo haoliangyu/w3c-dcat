@@ -1,12 +1,12 @@
 import { MultiPolygon } from 'geojson';
 import { Geometry } from 'wkx';
 
-export function bboxToGeoJSON(bboxString: string): MultiPolygon {
-  if (!bboxString) {
+export function bboxToGeoJSON(points: number[][]): MultiPolygon {
+  if (!points) {
     return;
   }
 
-  const coords = bboxString.split(',').map((value) => +value);
+  const coords = [...points[0], ...points[1]];
 
   return {
     type: 'MultiPolygon',
@@ -24,7 +24,7 @@ export function bboxToGeoJSON(bboxString: string): MultiPolygon {
   };
 }
 
-export function wktToGeoJSON(polygon) {
+export function wktToGeoJSON(polygon): MultiPolygon {
   if (!polygon || !polygon.startsWith('POLYGON')) {
     return null;
   }
@@ -36,7 +36,7 @@ export function wktToGeoJSON(polygon) {
   return multi;
 }
 
-export function ensureMultiPolygon(geometry) {
+export function ensureMultiPolygon(geometry): MultiPolygon {
   if (!geometry || geometry.type !== 'Polygon' || geometry.type !== 'MultiPolygon') {
     return null;
   }
