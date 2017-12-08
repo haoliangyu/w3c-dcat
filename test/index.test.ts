@@ -9,7 +9,8 @@ const requestOptions: RequestInit = {
   }
 };
 
-describe('DCAT Dataset', () => {
+describe('DCAT Dataset', function() {
+  this.timeout(10000);
 
   it('should be able to be converted from ArcGIS metadata.', (done) => {
     // ArcGIS Open Data v2 API
