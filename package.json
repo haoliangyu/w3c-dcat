@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A utility library to create and convert W3C DCAT in JSON",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "test": "mocha test/**/*.test.ts --require ts-node/register",
     "doc": "typedoc --theme minimal --name 'w3c-dcat' --out docs --readme README.md --includeDeclarations --excludeExternals src",
