@@ -137,14 +137,13 @@ export class Dataset {
       issued: meta.issued ? new Date(getDateString(meta.issued)) : null,
       modified: meta.modified ? new Date(getDateString(meta.modified)) : null,
       description: meta.description,
-      // TODO: this may be null
       landingPage: meta.landingPage || defaultValues.landingPage,
       license: meta.license,
-      // TODO: this may be null
       publisher: meta.publisher ? meta.publisher.name : defaultValues.publisher,
       keyword: meta.keyword || [],
       theme: [],
       spatial: wktToGeoJSON(meta.spatial),
+      accrualPeriodicity: meta.accrualPeriodicity,
       distribution
     };
 
@@ -201,6 +200,7 @@ export class Dataset {
       identifier: meta.guid,
       issued,
       modified,
+      accrualPeriodicity: meta.frequency,
       description: meta.description,
       landingPage: meta.link,
       publisher: defaultValues.publisher,
@@ -218,17 +218,21 @@ export class Dataset {
    * @return {Dataset}                Dataset object
    */
   private static fromOpenDataSoft(meta: any) {
+    const dataset = meta.dataset;
+    const attrs = dataset.metas.default;
+
     const converted = {
-      title: meta.title,
-      identifier: meta.dataset_id,
-      modified: meta.modified ? new Date(meta.modified) : null,
-      description: meta.description,
-      landingPage: `https://${meta.source_domain_address}/explore/dataset/${meta.source_dataset}`,
-      license: meta.license,
-      publisher: meta.publisher,
-      keyword: getValidArray(meta.keyword),
-      theme: getValidArray(meta.theme),
-      spatial: meta.geographic_area ? ensureMultiPolygon(meta.geographic_area.geometry) : null,
+      title: attrs.title,
+      identifier: dataset.dataset_id,
+      modified: attrs.modified ? new Date(attrs.modified) : null,
+      description: attrs.description,
+      landingPage: `https://${attrs.source_domain_address}/explore/dataset/${attrs.source_dataset}/information/`,
+      license: attrs.license,
+      language: attrs.language,
+      publisher: attrs.publisher,
+      keyword: getValidArray(attrs.keyword),
+      theme: getValidArray(attrs.theme),
+      spatial: attrs.geographic_area ? ensureMultiPolygon(attrs.geographic_area.geometry) : null,
       distribution: []
     };
 
@@ -244,6 +248,23 @@ export class Dataset {
   private static fromSocrata(meta: any, defaultValues: any = {}) {
     const resource = meta.resource;
 
+    let publisher;
+    let accrualPeriodicity;
+
+    if (_.has(meta, 'classification.domain_metadata')) {
+      publisher = _.find(meta.classification.domain_metadata, { key: 'Data-Owner_Owner' });
+
+      if (publisher) {
+        publisher = publisher.value;
+      }
+
+      accrualPeriodicity = _.find(meta.classification.domain_metadata, { key: 'Refresh-Frequency_Frequency' });
+
+      if (accrualPeriodicity) {
+        accrualPeriodicity = accrualPeriodicity.value;
+      }
+    }
+
     const converted = {
       title: resource.name,
       identifier: resource.id,
@@ -251,10 +272,11 @@ export class Dataset {
       modified: new Date(resource.updatedAt),
       description: resource.description,
       landingPage: meta.permalink || defaultValues.landingPage,
-      license: _.get(meta.metadata, 'license') as string,
-      publisher: meta.name,
-      keyword: _.concat(_.get(meta.classification, 'tags'), _.get(meta.classification, 'domain_tags')) as string[],
-      theme: _.concat(_.get(meta.classification, 'categories'), _.get(meta.classification, 'domain_category')) as string[],
+      license: _.get(meta, 'metadata.license') as string,
+      publisher: publisher || meta.attribution,
+      accrualPeriodicity,
+      keyword: _.concat(_.get(meta, 'classification.tags'), _.get(meta, 'classification.domain_tags')) as string[],
+      theme: _.concat(_.get(meta, 'classification.categories'), _.get(meta, 'classification.domain_category')) as string[],
       distribution: []
     };
 

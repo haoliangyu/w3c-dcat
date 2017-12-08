@@ -32,7 +32,8 @@ export class Dataset {
   public modified?: Date;
 
   /**
-   * The language of the dataset.
+   * The language of the catalog. This refers to the language used in the textual
+   * metadata describing titles, descriptions, etc. of the datasets in the catalog.
    * @type {string}
    */
   public language?: string;
@@ -42,6 +43,12 @@ export class Dataset {
    * @type {string}
    */
   public publisher: string;
+
+  /**
+   * The frequency at which dataset is published.
+   * @type {string}
+   */
+  public accrualPeriodicity?: string;
 
   /**
    * A unique identifier of the dataset.

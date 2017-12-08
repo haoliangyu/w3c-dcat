@@ -7,7 +7,7 @@
     "test": "mocha test/**/*.test.ts --require ts-node/register",
     "doc": "typedoc --theme minimal --name 'w3c-dcat' --out docs --readme README.md --includeDeclarations --excludeExternals src",
     "build": "tsc src/index.ts --outDir dist --declaration && cpx 'src/dcat/*' dist/dcat",
-    "precommit": "tsling src && npm test",
+    "precommit": "tslint src && npm test",
     "prepublish": "npm run build && npm run doc"
   },
   "repository": {

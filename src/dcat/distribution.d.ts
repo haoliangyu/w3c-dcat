@@ -33,6 +33,12 @@ export class Distribution {
   public downloadURL?: string;
 
   /**
+   * The media type of the distribution as defined by IANA.
+   * @type {string}
+   */
+  public mediaType?: string;
+
+  /**
    * The file format of the distribution. This is only usable when the downloadURL exists.
    * @type {string}
    */
