@@ -4,6 +4,9 @@
     "quotemark": [
       false
     ],
+    "arrow-parens": [
+      false
+    ],
     "trailing-comma": [
       false
     ],
