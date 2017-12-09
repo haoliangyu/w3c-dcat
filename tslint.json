@@ -2,8 +2,7 @@
   "extends": "tslint:recommended",
   "rules": {
     "quotemark": [
-      true,
-      "single"
+      false
     ],
     "trailing-comma": [
       false
