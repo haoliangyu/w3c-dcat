@@ -24,13 +24,16 @@ import { Dataset } from 'w3c-dcat';
 const datasetA = new Dataset();
 
 // create a new dataset with predefined value
-const datasetB = new Dataset(values);
+const datasetB = new Dataset({ title: 'New Dataset' });
 
 // extend the dataset metadata with an key-value object
-datasetA.set(values);
+datasetA.set({ title: 'New Name' });
 
-// get a value-only copy of the dataset metadata
-console.log(datasetB.get())
+// get property value
+console.log(datasetA.title);
+
+// get a JSON copy of the dataset metadata
+console.log(datasetB.toJSON())
 
 // get a DCAT datset class from other open data vendor's dataset metadata
 const datasetC = Dataset.from('ArcGIS', metadata)

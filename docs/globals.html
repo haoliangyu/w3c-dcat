@@ -930,13 +930,13 @@ img { max-width: 100%; }
 <span class="hljs-keyword">const</span> datasetA = <span class="hljs-keyword">new</span> Dataset();
 
 <span class="hljs-comment">// create a new dataset with predefined value</span>
-<span class="hljs-keyword">const</span> datasetB = <span class="hljs-keyword">new</span> Dataset(values);
+<span class="hljs-keyword">const</span> datasetB = <span class="hljs-keyword">new</span> Dataset({ <span class="hljs-attr">title</span>: <span class="hljs-string">'New Dataset'</span> });
 
 <span class="hljs-comment">// extend the dataset metadata with an key-value object</span>
-datasetA.set(values);
+datasetA.set({ <span class="hljs-attr">title</span>: <span class="hljs-string">'New Name'</span> });
 
-<span class="hljs-comment">// get a value-only copy of the dataset metadata</span>
-<span class="hljs-built_in">console</span>.log(datasetB.get())
+<span class="hljs-comment">// get a JSON copy of the dataset metadata</span>
+<span class="hljs-built_in">console</span>.log(datasetB.toJSON())
 
 <span class="hljs-comment">// get a DCAT datset class from other open data vendor's dataset metadata</span>
 <span class="hljs-keyword">const</span> datasetC = Dataset.from(<span class="hljs-string">'ArcGIS'</span>, metadata)

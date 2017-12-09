@@ -1,14 +1,100 @@
-import * as _ from 'lodash';
-import { Dataset as DcatDataset } from './dcat/dataset';
-import { bboxToGeoJSON, ensureMultiPolygon, wktToGeoJSON } from './utils';
+import * as _ from "lodash";
+import { MultiPolygon } from "geojson";
+import { Dataset as DcatDataset } from "./dcat/dataset";
+import { Distribution as DcatDistribution } from "./dcat/distribution";
+import {
+  bboxToGeoJSON,
+  ensureMultiPolygon,
+  wktToGeoJSON,
+  detectLanguage
+} from "./utils";
 
-export class Dataset {
+export class Dataset implements DcatDataset {
+  /**
+   * A name given to the dataset.
+   * @type {string}
+   */
+  public title: string;
 
   /**
-   * Dataset metadata
-   * @type  {DcatDataset}
+   * Free-text account of the dataset.
+   * @type {string}
    */
-  private _metadata: DcatDataset;
+  public description?: string;
+
+  /**
+   * Date of formal issuance (e.g., publication) of the dataset.
+   * @type {Date}
+   */
+  public issued?: Date;
+
+  /**
+   * Most recent date on which the dataset was changed, updated or modified.
+   * @type {Date}
+   */
+  public modified?: Date;
+
+  /**
+   * The language of the catalog. This refers to the language used in the textual
+   * metadata describing titles, descriptions, etc. of the datasets in the catalog.
+   * @type {string}
+   */
+  public language?: string;
+
+  /**
+   * An entity responsible for making the dataset available.
+   * @type {string}
+   */
+  public publisher: string;
+
+  /**
+   * The frequency at which dataset is published.
+   * @type {string}
+   */
+  public accrualPeriodicity?: string;
+
+  /**
+   * A unique identifier of the dataset.
+   * @type {string}
+   */
+  public identifier: string;
+
+  /**
+   * A Web page that can be navigated to in a Web browser to gain access to the
+   * dataset, its distributions and/or additional information.
+   * @type {string}
+   */
+  public landingPage: string;
+
+  /**
+   * A keyword or tag describing the dataset.
+   * @type {string[]}
+   */
+  public keyword: string[];
+
+  /**
+   * The main category of the dataset. A dataset can have multiple themes.
+   * @type {string[]}
+   */
+  public theme: string[];
+
+  /**
+   * dataset files
+   * @type {Distribution[]}
+   */
+  public distribution: DcatDistribution[];
+
+  /**
+   * This links to the license document under which the distribution is made available.
+   * @type {string}
+   */
+  public license?: string;
+
+  /**
+   * Spatial coverage of the dataset.
+   * @type {MultiPolygon|string}
+   */
+  public spatial?: MultiPolygon | string;
 
   /**
    * Metadata convertor
@@ -26,7 +112,7 @@ export class Dataset {
 
   constructor(meta?: DcatDataset) {
     if (meta) {
-      this._metadata = meta;
+      this.set(meta);
     }
   }
 
@@ -34,17 +120,27 @@ export class Dataset {
    * Get a deep copy of the current dataset metadata.
    * @return {DcatDataset} dataset metadata
    */
-  public get(): DcatDataset {
-    return _.cloneDeep(this._metadata);
+  public toJSON(): DcatDataset {
+    return _.cloneDeep(this as DcatDataset);
   }
 
   /**
    * Set the dataset metadata.
-   * @param   {object}    meta dataset metadata
+   * @param   {any}    meta dataset metadata
    * @return  {undefined}
    */
-  public set(meta: object) {
-    this._metadata = _.assign(this._metadata, meta);
+  public set(meta: any) {
+    _.assign(this, meta);
+
+    // any update about text
+    if (
+      meta.title ||
+      meta.description ||
+      _.get(meta, "keyword.length") > 0 ||
+      _.get(meta, "theme.length") > 0
+    ) {
+      this.language = detectLanguage(this);
+    }
   }
 
   /**
@@ -72,7 +168,7 @@ export class Dataset {
   private static fromArcGIS(meta: any): Dataset {
     const attrs = meta.attributes;
     const converted = {
-      title: attrs.title || attrs .name,
+      title: attrs.title || attrs.name,
       identifier: meta.id,
       issued: new Date(attrs.createdAt),
       modified: new Date(attrs.updatedAt),
@@ -108,14 +204,18 @@ export class Dataset {
     const converted = {
       title: meta.title,
       identifier: meta.id,
-      issued: meta.__extras ? new Date(meta.__extras.metadata_created) : new Date(meta.metadata_created),
-      modified: meta.__extras ? new Date(meta.__extras.metadata_modified) : new Date(meta.metadata_modified),
+      issued: meta.__extras
+        ? new Date(meta.__extras.metadata_created)
+        : new Date(meta.metadata_created),
+      modified: meta.__extras
+        ? new Date(meta.__extras.metadata_modified)
+        : new Date(meta.metadata_modified),
       description: meta.notes,
       landingPage: meta.url || defaultValues.landingPage,
       license: meta.license_title,
-      publisher: _.get(meta.organization, 'name') || defaultValues.publisher,
-      keyword: _.map(meta.tags, 'display_name') as string[],
-      theme: _.map(meta.groups, 'display_name') as string[],
+      publisher: _.get(meta.organization, "name") || defaultValues.publisher,
+      keyword: _.map(meta.tags, "display_name") as string[],
+      theme: _.map(meta.groups, "display_name") as string[],
       distribution
     };
 
@@ -129,7 +229,9 @@ export class Dataset {
    * @return {Dataset}                Dataset object
    */
   private static fromDKAN(meta: any, defaultValues: any = {}) {
-    const distribution = meta.distribution.filter((dist) => dist.downloadURL || dist.accessURL);
+    const distribution = meta.distribution.filter(
+      dist => dist.downloadURL || dist.accessURL
+    );
 
     const converted = {
       title: meta.title,
@@ -206,7 +308,7 @@ export class Dataset {
       publisher: defaultValues.publisher,
       keyword: meta.tags,
       theme: [meta.category_name],
-      distribution: [],
+      distribution: []
     };
 
     return new Dataset(converted);
@@ -226,13 +328,17 @@ export class Dataset {
       identifier: dataset.dataset_id,
       modified: attrs.modified ? new Date(attrs.modified) : null,
       description: attrs.description,
-      landingPage: `https://${attrs.source_domain_address}/explore/dataset/${attrs.source_dataset}/information/`,
+      landingPage: `https://${attrs.source_domain_address}/explore/dataset/${
+        attrs.source_dataset
+      }/information/`,
       license: attrs.license,
       language: attrs.language,
       publisher: attrs.publisher,
       keyword: getValidArray(attrs.keyword),
       theme: getValidArray(attrs.theme),
-      spatial: attrs.geographic_area ? ensureMultiPolygon(attrs.geographic_area.geometry) : null,
+      spatial: attrs.geographic_area
+        ? ensureMultiPolygon(attrs.geographic_area.geometry)
+        : null,
       distribution: []
     };
 
@@ -251,14 +357,18 @@ export class Dataset {
     let publisher;
     let accrualPeriodicity;
 
-    if (_.has(meta, 'classification.domain_metadata')) {
-      publisher = _.find(meta.classification.domain_metadata, { key: 'Data-Owner_Owner' });
+    if (_.has(meta, "classification.domain_metadata")) {
+      publisher = _.find(meta.classification.domain_metadata, {
+        key: "Data-Owner_Owner"
+      });
 
       if (publisher) {
         publisher = publisher.value;
       }
 
-      accrualPeriodicity = _.find(meta.classification.domain_metadata, { key: 'Refresh-Frequency_Frequency' });
+      accrualPeriodicity = _.find(meta.classification.domain_metadata, {
+        key: "Refresh-Frequency_Frequency"
+      });
 
       if (accrualPeriodicity) {
         accrualPeriodicity = accrualPeriodicity.value;
@@ -272,11 +382,17 @@ export class Dataset {
       modified: new Date(resource.updatedAt),
       description: resource.description,
       landingPage: meta.permalink || defaultValues.landingPage,
-      license: _.get(meta, 'metadata.license') as string,
+      license: _.get(meta, "metadata.license") as string,
       publisher: publisher || meta.attribution,
       accrualPeriodicity,
-      keyword: _.concat(_.get(meta, 'classification.tags'), _.get(meta, 'classification.domain_tags')) as string[],
-      theme: _.concat(_.get(meta, 'classification.categories'), _.get(meta, 'classification.domain_category')) as string[],
+      keyword: _.concat(
+        _.get(meta, "classification.tags"),
+        _.get(meta, "classification.domain_tags")
+      ) as string[],
+      theme: _.concat(
+        _.get(meta, "classification.categories"),
+        _.get(meta, "classification.domain_category")
+      ) as string[],
       distribution: []
     };
 
