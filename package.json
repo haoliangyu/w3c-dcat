@@ -11,7 +11,7 @@
     "precommit": "tslint src && npm run build && npm test && lint-staged"
   },
   "lint-staged": {
-    "*.{d.ts,ts}": [
+    "*.ts": [
       "prettier --write",
       "git add"
     ]
