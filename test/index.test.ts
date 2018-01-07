@@ -38,7 +38,7 @@ describe('DCAT Dataset', function() {
 
   it('should be able to be converted from DKAN metadata', (done) => {
     // DKAN dataset API
-    fetch('http://demo.getdkan.com/data.json', requestOptions)
+    fetch('https://data.ca.gov/data.json', requestOptions)
       .then((res) => res.json())
       .then((res) => {
         const dataset = Dataset.from('DKAN', res.dataset[0]);
