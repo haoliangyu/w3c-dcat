@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "mocha test/**/*.test.ts --require ts-node/register",
+    "test": "mocha --require ts-node/register test/index.test.ts",
     "doc": "typedoc --theme minimal --name 'w3c-dcat' --out docs --readme README.md --includeDeclarations --excludeExternals src",
-    "build": "tsc src/index.ts --outDir dist --declaration && cpx 'src/dcat/*' dist/dcat",
+    "build": "tsc && cpx 'src/dcat/*' dist/dcat",
     "precommit": "tslint src && npm run build && npm test && lint-staged"
   },
   "lint-staged": {
@@ -34,18 +34,18 @@
   ],
   "homepage": "https://github.com/haoliangyu/w3c-dcat#readme",
   "devDependencies": {
-    "@types/chai": "^4.0.10",
-    "@types/mocha": "^2.2.44",
+    "@types/chai": "^4.1.0",
+    "@types/mocha": "^2.2.46",
     "@types/node-fetch": "^1.6.7",
     "chai": "^4.1.2",
     "cpx": "^1.5.0",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
-    "mocha": "^4.0.1",
+    "mocha": "^4.1.0",
     "node-fetch": "^1.7.3",
-    "prettier": "^1.9.2",
-    "ts-node": "^4.0.2",
-    "tslint": "^5.8.0",
+    "prettier": "^1.10.2",
+    "ts-node": "^4.1.0",
+    "tslint": "^5.9.1",
     "typedoc": "^0.9.0",
     "typescript": "^2.6.2"
   },

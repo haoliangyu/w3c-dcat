@@ -7,6 +7,12 @@
 export class Distribution {
 
   /**
+   * DCAT class
+   * @type {string}
+   */
+  public "@type": string;
+
+  /**
    * A name given to the distribution.
    * @type {string}
    */

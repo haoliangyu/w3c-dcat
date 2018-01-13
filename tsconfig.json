@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
+    "outDir": "./dist",
     "target": "ES2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "removeComments": true
+    "declaration": true
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*.ts"
   ]
 }

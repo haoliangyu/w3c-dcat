@@ -8,6 +8,12 @@ import { Distribution } from './distribution';
 export class Dataset {
 
   /**
+   * DCAT class
+   * @type {string}
+   */
+  public "@type": string;
+
+  /**
    * A name given to the dataset.
    * @type {string}
    */
@@ -36,7 +42,7 @@ export class Dataset {
    * metadata describing titles, descriptions, etc. of the datasets in the catalog.
    * @type {string}
    */
-  public language?: string;
+  public language?: string[];
 
   /**
    * An entity responsible for making the dataset available.

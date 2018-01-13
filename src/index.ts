@@ -1,7 +1,6 @@
 import * as _ from "lodash";
+import * as DCAT from "./dcat";
 import { MultiPolygon } from "geojson";
-import { Dataset as DcatDataset } from "./dcat/dataset";
-import { Distribution as DcatDistribution } from "./dcat/distribution";
 import {
   bboxToGeoJSON,
   ensureMultiPolygon,
@@ -9,7 +8,19 @@ import {
   detectLanguage
 } from "./utils";
 
-export class Dataset implements DcatDataset {
+export enum Type {
+  Catalog = "dcat:Catalog",
+  Dataset = "dcat:Dataset",
+  Distribution = "dcat:Distribution"
+}
+
+export class Dataset implements DCAT.Dataset {
+  /**
+   * DCAT class
+   * @type {string}
+   */
+  public "@type": Type = Type.Dataset;
+
   /**
    * A name given to the dataset.
    * @type {string}
@@ -37,9 +48,9 @@ export class Dataset implements DcatDataset {
   /**
    * The language of the catalog. This refers to the language used in the textual
    * metadata describing titles, descriptions, etc. of the datasets in the catalog.
-   * @type {string}
+   * @type {string[]}
    */
-  public language?: string;
+  public language?: string[];
 
   /**
    * An entity responsible for making the dataset available.
@@ -82,7 +93,7 @@ export class Dataset implements DcatDataset {
    * dataset files
    * @type {Distribution[]}
    */
-  public distribution: DcatDistribution[];
+  public distribution: DCAT.Distribution[];
 
   /**
    * This links to the license document under which the distribution is made available.
@@ -110,7 +121,7 @@ export class Dataset implements DcatDataset {
     socrata: Dataset.fromSocrata
   };
 
-  constructor(meta?: DcatDataset) {
+  constructor(meta?: any) {
     if (meta) {
       this.set(meta);
     }
@@ -118,10 +129,10 @@ export class Dataset implements DcatDataset {
 
   /**
    * Get a deep copy of the current dataset metadata.
-   * @return {DcatDataset} dataset metadata
+   * @return {DCAT.Dataset} dataset metadata
    */
-  public toJSON(): DcatDataset {
-    return _.cloneDeep(this as DcatDataset);
+  public toJSON(): DCAT.Dataset {
+    return _.cloneDeep(this as DCAT.Dataset);
   }
 
   /**
@@ -134,12 +145,13 @@ export class Dataset implements DcatDataset {
 
     // any update about text
     if (
-      meta.title ||
-      meta.description ||
-      _.get(meta, "keyword.length") > 0 ||
-      _.get(meta, "theme.length") > 0
+      !meta.language &&
+      (meta.title ||
+        meta.description ||
+        _.get(meta, "keyword.length") > 0 ||
+        _.get(meta, "theme.length") > 0)
     ) {
-      this.language = detectLanguage(this);
+      this.language = [detectLanguage(this)];
     }
   }
 
@@ -194,6 +206,7 @@ export class Dataset implements DcatDataset {
   private static fromCKAN(meta: any, defaultValues: any = {}) {
     const distribution = _.map(meta.resources, (file: any) => {
       return {
+        "@type": Type.Distribution,
         title: file.title || file.name || file.format,
         description: file.description,
         accessURL: file.url,
@@ -244,6 +257,7 @@ export class Dataset implements DcatDataset {
       publisher: meta.publisher ? meta.publisher.name : defaultValues.publisher,
       keyword: meta.keyword || [],
       theme: [],
+      language: meta.language,
       spatial: wktToGeoJSON(meta.spatial),
       accrualPeriodicity: meta.accrualPeriodicity,
       distribution
@@ -263,6 +277,7 @@ export class Dataset implements DcatDataset {
 
     if (meta.distribution_description && meta.distribution_url) {
       distribution.push({
+        "@type": Type.Distribution,
         description: meta.distribution_description,
         url: meta.distribution_url
       });
