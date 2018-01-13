@@ -35,7 +35,8 @@ console.log(datasetA.title);
 // get a JSON copy of the dataset metadata
 console.log(datasetB.toJSON())
 
-// get a DCAT datset class from other open data vendor's dataset metadata
+// get a DCAT datset class from other open data vendor's
+// dataset metadata
 const datasetC = Dataset.from('ArcGIS', metadata)
 
 ```
