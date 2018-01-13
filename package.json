@@ -8,7 +8,8 @@
     "test": "mocha --require ts-node/register test/index.test.ts",
     "doc": "typedoc --theme minimal --name 'w3c-dcat' --out docs --readme README.md --includeDeclarations --excludeExternals src",
     "build": "tsc && cpx 'src/dcat/*' dist/dcat",
-    "precommit": "tslint src && npm run build && npm test && lint-staged"
+    "lint": "tslint src/**/*.ts",
+    "precommit": "npm run lint && npm run build && npm test && lint-staged"
   },
   "lint-staged": {
     "src/*.{d.ts,ts}": [
