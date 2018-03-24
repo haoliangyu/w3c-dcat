@@ -50,7 +50,7 @@ const datasetC = Dataset.from('ArcGIS', metadata)
 * [CKAN](https://ckan.org/) (v3 API)
 * [DKAN](https://getdkan.org/)
 * [GeoNode](http://geonode.org/)
-* [Junar](http://www.junar.com/index9ed2.html?lang=en) (v2 API)
+* [Junar](https://junar.github.io/docs/en) (v2 API)
 * [OpenDataSoft](https://www.opendatasoft.com/) (v2 API)
 * [Socrata](https://socrata.com/solutions/open-data-citizen-engagement/) (v1 API)
 
