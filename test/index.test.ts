@@ -50,7 +50,7 @@ describe('DCAT Dataset', function() {
 
   it('should be able to be converted from GeoNode metadata', (done) => {
     // GeoNode v2.4 API
-    fetch('http://geonode.state.gov/api/base?limit=1', requestOptions)
+    fetch('https://geonode.wfp.org/api/base?limit=1', requestOptions)
       .then((res) => res.json())
       .then((res) => {
         const dataset = Dataset.from('GeoNode', res.objects[0]);
