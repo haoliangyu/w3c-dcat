@@ -283,6 +283,15 @@ export class Dataset implements DCAT.Dataset {
       });
     }
 
+    let spatial;
+
+    try {
+      spatial = wktToGeoJSON(meta.csw_wkt_geometry);
+    } catch (error) {
+      // The GeoNode site may include bad input for the WKT. Skip it.
+      console.error(error);
+    }
+
     const converted = {
       title: meta.title,
       identifier: meta.uuid,
@@ -292,7 +301,7 @@ export class Dataset implements DCAT.Dataset {
       publisher: defaultValues.name,
       keyword: [],
       theme: [meta.category__gn_description],
-      spatial: wktToGeoJSON(meta.csw_wkt_geometry),
+      spatial,
       distribution
     };
 

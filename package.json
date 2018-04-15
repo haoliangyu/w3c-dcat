@@ -1,6 +1,6 @@
 {
   "name": "w3c-dcat",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A utility library to create and convert W3C DCAT in JSON",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -35,25 +35,25 @@
   ],
   "homepage": "https://github.com/haoliangyu/w3c-dcat#readme",
   "devDependencies": {
-    "@types/chai": "^4.1.0",
-    "@types/mocha": "^2.2.46",
-    "@types/node-fetch": "^1.6.7",
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^5.0.0",
+    "@types/node-fetch": "^1.6.8",
     "chai": "^4.1.2",
     "cpx": "^1.5.0",
     "husky": "^0.14.3",
-    "lint-staged": "^6.0.0",
-    "mocha": "^4.1.0",
-    "node-fetch": "^1.7.3",
-    "prettier": "^1.10.2",
-    "ts-node": "^4.1.0",
+    "lint-staged": "^7.0.4",
+    "mocha": "^5.1.0",
+    "node-fetch": "^2.1.2",
+    "prettier": "^1.12.0",
+    "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
-    "typedoc": "^0.9.0",
-    "typescript": "^2.6.2"
+    "typedoc": "^0.11.1",
+    "typescript": "^2.8.1"
   },
   "dependencies": {
-    "@types/geojson": "^7946.0.0",
+    "@types/geojson": "^7946.0.2",
     "franc-min": "^3.1.1",
-    "lodash": "^4.17.4",
-    "wkx": "^0.4.2"
+    "lodash": "^4.17.5",
+    "wkx": "^0.4.4"
   }
 }
